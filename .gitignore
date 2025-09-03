@@ -1,0 +1,29 @@
+.env
+.env.*
+!.env.example 
+
+# Папка виртуального окружения
+venv/
+/venv/
+.venv/
+*/.venv/
+
+# --- Файлы базы данных ---
+fastapi.db
+*.db
+*.sqlite3
+
+# --- Python кэш и артефакты ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Инструменты разработки и IDE ---
+.vscode/
+.idea/
+
+# --- Инструменты тестирования ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
