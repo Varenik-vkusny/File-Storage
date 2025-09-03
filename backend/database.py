@@ -12,6 +12,9 @@ SQLALCHEMY_DATABASE_URL = settings.sqlalchemy_database_url
 async_engine = create_async_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
 
+
+
 AsyncLocalSession = sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 
 Base = declarative_base()
+from . import models

@@ -7,8 +7,8 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..'
 
 from sqlalchemy import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
-from src.backend.database import Base
-from src.backend.config import get_settings
+from backend.database import Base
+from backend.config import get_settings
 
 settings = get_settings()
 
@@ -34,10 +34,10 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-database_url = settings.database_url
+database_url = settings.sqlalchemy_database_url
 
-print("Running in local mode. Replacing DB host for Alembic.")
-database_url = database_url.replace("db:5432", "localhost:5432")
+# print("Running in local mode. Replacing DB host for Alembic.")
+# database_url = database_url.replace("db:5432", "localhost:5432")
 
 config.set_main_option('sqlalchemy.url', database_url)
 
