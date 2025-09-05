@@ -29,17 +29,14 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
-
+settings = get_settings()
 database_url = settings.sqlalchemy_database_url
+config.set_main_option('sqlalchemy.url', database_url)
 
 # print("Running in local mode. Replacing DB host for Alembic.")
 # database_url = database_url.replace("db:5432", "localhost:5432")
 
-config.set_main_option('sqlalchemy.url', database_url)
+# config.set_main_option('sqlalchemy.url', database_url)
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -81,12 +78,14 @@ async def run_migrations_online() -> None:
 
     """
     connectable = create_async_engine(
-        config.get_main_option('sqlalchemy.url')
+        config.get_main_option("sqlalchemy.url")
     )
 
+    
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
 
+    
     await connectable.dispose()
 
 

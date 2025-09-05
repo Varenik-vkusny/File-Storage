@@ -1,17 +1,33 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
+from .roles import UserRole
 
 
 class UserIn(BaseModel):
     username: str
     password: str
+    department_id: int
+
+
+class DepartmentOut(BaseModel):
+    id: int
+    name: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserOut(BaseModel):
     id: int
     username: str
+    role: UserRole
+
+    department: DepartmentOut | None=None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserRoleUpdate(BaseModel):
+    role: UserRole
 
 
 class Token(BaseModel):

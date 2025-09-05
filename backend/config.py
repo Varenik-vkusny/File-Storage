@@ -16,9 +16,19 @@ class Settings(BaseSettings):
     @computed_field
     @property
     def sqlalchemy_database_url(self) -> str:
-        return f'{self.db_driver}://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}'
+        base_url = (
+            f"{self.db_driver}://{self.db_user}:{self.db_password}@"
+            f"{self.db_host}:{self.db_port}/{self.db_name}"
+        )
+        
+        return base_url
+
     
-    model_config = SettingsConfigDict(env_file='.env', extra='ignore')
+    model_config = SettingsConfigDict(
+        env_file='.env', 
+        env_file_encoding='utf-8', 
+        extra='ignore'
+    )
     
 
 def get_settings():

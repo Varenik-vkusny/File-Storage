@@ -1,8 +1,8 @@
-"""Initial migration with models User, Department, File
+"""Fixed problems in relationships
 
-Revision ID: a2165bedd219
+Revision ID: 055fc82d684b
 Revises: 
-Create Date: 2025-09-03 18:57:29.361426
+Create Date: 2025-09-04 16:45:35.515023
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a2165bedd219'
+revision: str = '055fc82d684b'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,6 +24,8 @@ def upgrade() -> None:
     op.create_table('departments',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
+    sa.Column('department_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -31,21 +33,27 @@ def upgrade() -> None:
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(), nullable=True),
+    sa.Column('role', sa.Enum('USER', 'MANAGER', 'ADMIN', name='userrole'), nullable=False),
     sa.Column('password_hash', sa.String(), nullable=True),
     sa.Column('department_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
-    op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=False)
+    op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('files',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('filename', sa.String(), nullable=True),
     sa.Column('s3_path', sa.String(), nullable=True),
-    sa.Column('visibility', sa.String(), nullable=True),
+    sa.Column('visibility', sa.Enum('PRIVATE', 'DEPARTMENT', 'PUBLIC', name='filevisibility'), nullable=False),
+    sa.Column('page_count', sa.Integer(), nullable=True),
+    sa.Column('author', sa.String(), nullable=True),
     sa.Column('owner_id', sa.Integer(), nullable=True),
+    sa.Column('department_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('s3_path')
     )
     op.create_index(op.f('ix_files_id'), 'files', ['id'], unique=False)
     # ### end Alembic commands ###
