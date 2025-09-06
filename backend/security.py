@@ -12,7 +12,8 @@ ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 
-pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')\
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def hash_password(password: str):
     return pwd_context.hash(password)
@@ -26,18 +27,15 @@ def create_access_token(data: dict, expire_minutes: Optional[timedelta] = None):
 
     to_encode = data.copy()
 
-    if expire_minutes: 
+    if expire_minutes:
         expire = datetime.now(timezone.utc) + expire_minutes
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        )
 
+    to_encode["exp"] = expire
 
-    to_encode['exp'] = expire
-
-    encoded_jwt = jwt.encode(
-        claims=to_encode,
-        key=SECRET_KEY,
-        algorithm=ALGORITHM
-    )
+    encoded_jwt = jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt

@@ -9,35 +9,35 @@ from ..dependencies import get_db, get_current_user
 router = APIRouter()
 
 
-@router.post('/login', response_model=schemas.Token, status_code=status.HTTP_200_OK)
-async def login(user_data: OAuth2PasswordRequestForm=Depends(), db: AsyncSession=Depends(get_db)):
+@router.post("/login", response_model=schemas.Token, status_code=status.HTTP_200_OK)
+async def login(
+    user_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)
+):
 
-    user_result = await db.execute(select(models.User).where(models.User.username == user_data.username))
+    user_result = await db.execute(
+        select(models.User).where(models.User.username == user_data.username)
+    )
 
     user_db = user_result.scalar_one_or_none()
 
     authorization_exception = HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Неправильное имя или пароль!'
-        )
+        status_code=status.HTTP_404_NOT_FOUND, detail="Неправильное имя или пароль!"
+    )
 
     if not user_db:
         raise authorization_exception
-    
+
     if not security.verify_password(user_data.password, user_db.password_hash):
         raise authorization_exception
-    
-    data = {'sub': user_data.username}
+
+    data = {"sub": user_data.username}
 
     access_token = security.create_access_token(data=data)
 
-    return {
-        'access_token': access_token,
-        'token_type': 'bearer'
-    }
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get('/me', response_model=schemas.UserOut, status_code=status.HTTP_200_OK)
+@router.get("/me", response_model=schemas.UserOut, status_code=status.HTTP_200_OK)
 async def get_current_user_info(current_user: models.User = Depends(get_current_user)):
 
     return current_user

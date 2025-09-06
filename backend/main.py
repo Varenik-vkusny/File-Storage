@@ -11,11 +11,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(auth.router, prefix='/auth', tags=['Authentication'])
-app.include_router(users.router, prefix='/users', tags=['Users'])
-app.include_router(files.router, prefix='/files', tags=['Files'])
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(users.router, prefix="/users", tags=["Users"])
+app.include_router(files.router, prefix="/files", tags=["Files"])
 
 
-@app.get('/')
+@app.get("/")
 async def Hello():
-    return {'message': 'Hello World'}
+    return {"message": "Hello World"}
