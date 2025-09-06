@@ -1,8 +1,8 @@
-"""Fixed problems in relationships
+"""Create initial database schema
 
-Revision ID: 055fc82d684b
+Revision ID: 2e054cebb029
 Revises: 
-Create Date: 2025-09-04 16:45:35.515023
+Create Date: 2025-09-05 13:21:23.100718
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '055fc82d684b'
+revision: str = '2e054cebb029'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,8 +24,6 @@ def upgrade() -> None:
     op.create_table('departments',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('department_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -46,6 +44,7 @@ def upgrade() -> None:
     sa.Column('filename', sa.String(), nullable=True),
     sa.Column('s3_path', sa.String(), nullable=True),
     sa.Column('visibility', sa.Enum('PRIVATE', 'DEPARTMENT', 'PUBLIC', name='filevisibility'), nullable=False),
+    sa.Column('downloads', sa.Integer(), nullable=True),
     sa.Column('page_count', sa.Integer(), nullable=True),
     sa.Column('author', sa.String(), nullable=True),
     sa.Column('owner_id', sa.Integer(), nullable=True),

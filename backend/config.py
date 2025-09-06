@@ -13,6 +13,12 @@ class Settings(BaseSettings):
     algorithm: str
     access_token_expire_minutes: int
 
+    s3_endpoint_url: str
+    s3_access_key: str
+    s3_secret_key: str
+    s3_bucket_name: str
+    s3_public_url: str
+
     @computed_field
     @property
     def sqlalchemy_database_url(self) -> str:

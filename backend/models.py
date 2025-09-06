@@ -37,6 +37,7 @@ class File(Base):
     filename = Column(String)
     s3_path = Column(String, unique=True)
     visibility = Column(SQLAlchemyEnum(FileVisibility, name='filevisibility'), nullable=False)
+    downloads = Column(Integer, default=0)
 
     page_count = Column(Integer, nullable=True)
     author = Column(String, nullable=True)

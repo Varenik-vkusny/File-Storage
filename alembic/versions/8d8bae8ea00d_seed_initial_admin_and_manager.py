@@ -1,7 +1,7 @@
 """Add admin and manager
 
-Revision ID: 01b8db206a26
-Revises: 055fc82d684b
+Revision ID: 8d8bae8ea00d
+Revises: 2e054cebb029
 Create Date: 2025-09-04 17:00:33.018847
 
 """
@@ -13,8 +13,8 @@ from backend.security import hash_password
 
 
 # revision identifiers, used by Alembic.
-revision: str = '01b8db206a26'
-down_revision: Union[str, Sequence[str], None] = '055fc82d684b'
+revision: str = '8d8bae8ea00d'
+down_revision: Union[str, Sequence[str], None] = '2e054cebb029'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

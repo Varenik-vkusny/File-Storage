@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from .. import models, schemas, security
-from ..dependencies import get_db
+from ..dependencies import get_db, get_current_user
 
 
 router = APIRouter()
@@ -35,3 +35,9 @@ async def login(user_data: OAuth2PasswordRequestForm=Depends(), db: AsyncSession
         'access_token': access_token,
         'token_type': 'bearer'
     }
+
+
+@router.get('/me', response_model=schemas.UserOut, status_code=status.HTTP_200_OK)
+async def get_current_user_info(current_user: models.User = Depends(get_current_user)):
+
+    return current_user

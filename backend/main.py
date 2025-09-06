@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from .routers import auth, users
+from .routers import auth, users, files
 
 
 @asynccontextmanager
@@ -13,6 +13,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(auth.router, prefix='/auth', tags=['Authentication'])
 app.include_router(users.router, prefix='/users', tags=['Users'])
+app.include_router(files.router, prefix='/files', tags=['Files'])
 
 
 @app.get('/')

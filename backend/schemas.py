@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
-from .roles import UserRole
+from .roles import UserRole, FileVisibility
 
 
 class UserIn(BaseModel):
@@ -28,6 +28,16 @@ class UserOut(BaseModel):
 
 class UserRoleUpdate(BaseModel):
     role: UserRole
+
+
+class FileOut(BaseModel):
+    id: int
+    filename: str
+    visibility: FileVisibility
+    department_id: int | None=None
+
+    model_config = ConfigDict(from_attributes=True)
+
 
 
 class Token(BaseModel):
