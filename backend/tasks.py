@@ -1,9 +1,6 @@
 import asyncio
-
-
 from pypdf import PdfReader
 from docx import Document
-
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
@@ -18,6 +15,12 @@ settings = get_settings()
 
 
 async def process_file_async(file_id: int):
+    """
+    Основная асинхронная "рабочая лошадка".
+
+    Выполняет всю работу с I/O операциями (БД, S3) в едином
+    асинхронном контексте, чтобы избежать проблем с event loop'ами.
+    """
 
     engine = create_async_engine(settings.sqlalchemy_database_url)
     async_session_factory = sessionmaker(
@@ -57,7 +60,9 @@ async def process_file_async(file_id: int):
                 meta = document.core_properties
                 metadata_to_update["author"] = meta.author
                 metadata_to_update["title"] = meta.title
-                metadata_to_update["created_date"] = str(meta.created)
+                metadata_to_update["created_date"] = (
+                    str(meta.created) if meta.created else None
+                )
                 metadata_to_update["paragraph_count"] = len(document.paragraphs)
                 metadata_to_update["table_count"] = len(document.tables)
             except Exception as e:
@@ -77,13 +82,23 @@ async def process_file_async(file_id: int):
 
 @celery_app.task
 def extract_metadata(file_id: int):
+    """
+    Главный Celery-таск для извлечения метаданных из файла.
+
+    Это СИНХРОННАЯ "обертка", которую вызывает Celery.
+    Внутри себя она запускает асинхронную функцию `process_file_async`
+    для выполнения всей основной работы.
+    """
+
     print(f"Запущена задача extract_metadata для файла ID: {file_id}")
 
     try:
+
         asyncio.run(process_file_async(file_id))
         result_message = f"Обработка файла {file_id} завершена успешно."
     except Exception as e:
-        print(f"Произошла ошибка при обработке файла {file_id}: {e}")
+
+        print(f"Произошла критическая ошибка при обработке файла {file_id}: {e}")
         result_message = f"Ошибка при обработке файла {file_id}."
 
     return result_message

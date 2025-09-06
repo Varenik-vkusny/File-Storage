@@ -1,5 +1,6 @@
 from pydantic_settings import SettingsConfigDict, BaseSettings
 from pydantic import computed_field
+from functools import lru_cache
 
 
 class Settings(BaseSettings):
@@ -37,5 +38,19 @@ class Settings(BaseSettings):
     )
 
 
+@lru_cache
 def get_settings():
     return Settings()
+
+
+def get_test_settings():
+    return Settings(
+        algorithm="HS256",
+        secret_key="test_secret_key_for_jwt_tokens",
+        access_token_expire_minutes=30,
+        s3_endpoint_url="http://localhost:9000",
+        s3_public_url="http://localhost:9000",
+        s3_access_key="TestVolume",
+        s3_secret_key="MinioPassword",
+        s3_bucket_name="document",
+    )
