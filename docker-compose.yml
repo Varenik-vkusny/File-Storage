@@ -89,6 +89,24 @@ services:
       exit 0;
       "
 
+  redis:
+    image: redis:7-alpine
+
+    ports:
+      - '6379:6379'
+
+  worker:
+    build: .
+
+    command: celery -A backend.worker worker --loglevel=info
+
+    env_file:
+      - .env
+
+    depends_on:
+      - db
+      - redis
+
 volumes:
   postgres_data:
 

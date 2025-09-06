@@ -2,8 +2,9 @@ import os
 import sys
 import asyncio
 from logging.config import fileConfig
+from alembic import context
 
-sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), "..")))
 
 from sqlalchemy import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -11,8 +12,6 @@ from backend.database import Base
 from backend.config import get_settings
 
 settings = get_settings()
-
-from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -31,12 +30,13 @@ target_metadata = Base.metadata
 
 settings = get_settings()
 database_url = settings.sqlalchemy_database_url
-config.set_main_option('sqlalchemy.url', database_url)
+config.set_main_option("sqlalchemy.url", database_url)
 
 # print("Running in local mode. Replacing DB host for Alembic.")
 # database_url = database_url.replace("db:5432", "localhost:5432")
 
 # config.set_main_option('sqlalchemy.url', database_url)
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -77,15 +77,11 @@ async def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = create_async_engine(
-        config.get_main_option("sqlalchemy.url")
-    )
+    connectable = create_async_engine(config.get_main_option("sqlalchemy.url"))
 
-    
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
 
-    
     await connectable.dispose()
 
 
